@@ -6,6 +6,8 @@ Use it for clipped text, crowded controls, table rows, or panels that do not ope
 
 ## Add the skill
 
+You need Node.js 22.20 or later for this command:
+
 ```sh
 npx skills add Belalkf/give-qt-eyes
 ```
