@@ -22,8 +22,10 @@ The skill uses your project's tests and Qt setup. Adding it does not install Pyt
 
 The optional Python tool saves a screenshot with widget sizes and row counts. It can also mark text paragraphs on a copy of the image.
 
+Install this version from GitHub. You need Python 3.9+ and Git:
+
 ```sh
-python -m pip install give-qt-eyes
+python -m pip install 'git+https://github.com/Belalkf/give-qt-eyes.git@v0.1.0'
 ```
 
 Inside an existing app test, after the layout is ready:

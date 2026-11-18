@@ -4,14 +4,16 @@ The Python tool is optional. It saves images and measurements from an existing Q
 
 ## Install
 
+You need Python 3.9+ and Git. Install version 0.1.0 from GitHub in the Python environment used by your app:
+
 ```sh
-python -m pip install give-qt-eyes
+python -m pip install 'git+https://github.com/Belalkf/give-qt-eyes.git@v0.1.0'
 ```
 
-Choose the Python environment used by your app. If it has no PySide6 installation, you can request the optional Qt dependency:
+If that environment has no PySide6 installation, you can request the optional Qt dependency:
 
 ```sh
-python -m pip install 'give-qt-eyes[qt]'
+python -m pip install 'give-qt-eyes[qt] @ git+https://github.com/Belalkf/give-qt-eyes.git@v0.1.0'
 ```
 
 Do not replace a project's Qt version just to use this tool. The comparison command needs no Qt installation.
