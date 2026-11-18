@@ -1,0 +1,61 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  package:
+    name: Package and CLI
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.9'
+      - run: python -m pip install build setuptools==68.0.0 wheel
+      - run: python -m build --no-isolation
+      - run: python -m pip install --no-deps dist/*.whl
+      - run: python -m unittest tests.test_compare tests.test_text_compare tests.test_install -v
+      - run: give-qt-eyes --version
+  qt:
+    name: Qt (${{ matrix.os }}, ${{ matrix.runtime.python }}, ${{ matrix.runtime.qt }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15-intel, windows-latest]
+        runtime:
+          - {python: '3.9', qt: '6.5.0'}
+          - {python: '3.13', qt: '6.10.3'}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.runtime.python }}
+      - name: Linux Qt system libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
+      - run: python -m pip install . PySide6==${{ matrix.runtime.qt }}
+      - run: python -m unittest discover -s tests -t . -v
+        env:
+          QT_QPA_PLATFORM: offscreen
+  ci:
+    name: CI
+    needs: [package, qt]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require every test job
+        env:
+          PACKAGE_RESULT: ${{ needs.package.result }}
+          QT_RESULT: ${{ needs.qt.result }}
+        run: test "$PACKAGE_RESULT" = success && test "$QT_RESULT" = success

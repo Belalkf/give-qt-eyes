@@ -1,0 +1,7 @@
+{
+  "name": "give-qt-eyes",
+  "version": "0.1.0",
+  "description": "Check Qt layout problems with screenshots, measurements, and normal controls.",
+  "license": "MIT",
+  "skills": "./skills/"
+}

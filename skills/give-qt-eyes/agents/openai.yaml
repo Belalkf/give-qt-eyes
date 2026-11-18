@@ -1,0 +1,4 @@
+interface:
+  display_name: "Give Qt Eyes"
+  short_description: "Check what a Qt window really shows"
+  default_prompt: "Use $give-qt-eyes to check this Qt layout problem with normal controls, fresh images, and measurements. Explain what changed and what is still unknown."
